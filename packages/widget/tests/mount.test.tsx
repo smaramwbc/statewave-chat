@@ -49,7 +49,7 @@ describe("mountStatewaveChat", () => {
     await act(async () => {
       handle = mountStatewaveChat(container, {
         adapter: makeAdapter(),
-        readSubjects: ["test:subject"],
+        readSubjects: ["test:subject"], retrievalConfig: { globalMaxTokens: 1000 },
       });
     });
     expect(container.innerHTML).not.toBe("");
@@ -62,7 +62,7 @@ describe("mountStatewaveChat", () => {
     await act(async () => {
       handle = mountStatewaveChat(container, {
         adapter: makeAdapter(),
-        readSubjects: ["test:subject"],
+        readSubjects: ["test:subject"], retrievalConfig: { globalMaxTokens: 1000 },
       });
     });
     expect(container.innerHTML).not.toBe("");
@@ -74,7 +74,7 @@ describe("mountStatewaveChat", () => {
     expect(() =>
       mountStatewaveChat(null, {
         adapter: makeAdapter(),
-        readSubjects: ["test:subject"],
+        readSubjects: ["test:subject"], retrievalConfig: { globalMaxTokens: 1000 },
       }),
     ).toThrow(/container element is null/);
   });
@@ -86,8 +86,8 @@ describe("mountStatewaveChat", () => {
     let h2!: ReturnType<typeof mountStatewaveChat>;
 
     await act(async () => {
-      h1 = mountStatewaveChat(c1, { adapter: makeAdapter(), readSubjects: ["test:s1"] });
-      h2 = mountStatewaveChat(c2, { adapter: makeAdapter(), readSubjects: ["test:s2"] });
+      h1 = mountStatewaveChat(c1, { adapter: makeAdapter(), readSubjects: ["test:s1"], retrievalConfig: { globalMaxTokens: 1000 } });
+      h2 = mountStatewaveChat(c2, { adapter: makeAdapter(), readSubjects: ["test:s2"], retrievalConfig: { globalMaxTokens: 1000 } });
     });
 
     expect(c1.innerHTML).not.toBe("");
@@ -103,8 +103,8 @@ describe("mountStatewaveChat", () => {
     let h2!: ReturnType<typeof mountStatewaveChat>;
 
     await act(async () => {
-      h1 = mountStatewaveChat(c1, { adapter: makeAdapter(), readSubjects: ["test:s1"] });
-      h2 = mountStatewaveChat(c2, { adapter: makeAdapter(), readSubjects: ["test:s2"] });
+      h1 = mountStatewaveChat(c1, { adapter: makeAdapter(), readSubjects: ["test:s1"], retrievalConfig: { globalMaxTokens: 1000 } });
+      h2 = mountStatewaveChat(c2, { adapter: makeAdapter(), readSubjects: ["test:s2"], retrievalConfig: { globalMaxTokens: 1000 } });
     });
 
     await act(async () => { h1.unmount(); });

@@ -28,7 +28,7 @@ describe("StatewaveChat", () => {
     const { container } = render(
       <StatewaveChat
         adapter={makeAdapter()}
-        readSubjects={["test:subject"]}
+        readSubjects={["test:subject"]} retrievalConfig={{ globalMaxTokens: 1000 }}
       />,
     );
     expect(container.firstChild).toBeTruthy();
@@ -38,7 +38,7 @@ describe("StatewaveChat", () => {
     render(
       <StatewaveChat
         adapter={makeAdapter()}
-        readSubjects={["test:subject"]}
+        readSubjects={["test:subject"]} retrievalConfig={{ globalMaxTokens: 1000 }}
       />,
     );
     expect(screen.getByRole("textbox")).toBeTruthy();
@@ -48,7 +48,7 @@ describe("StatewaveChat", () => {
     render(
       <StatewaveChat
         adapter={makeAdapter()}
-        readSubjects={["test:subject"]}
+        readSubjects={["test:subject"]} retrievalConfig={{ globalMaxTokens: 1000 }}
       />,
     );
     expect(screen.getByRole("button", { name: /send message/i })).toBeTruthy();
@@ -58,7 +58,7 @@ describe("StatewaveChat", () => {
     render(
       <StatewaveChat
         adapter={makeAdapter()}
-        readSubjects={["test:subject"]}
+        readSubjects={["test:subject"]} retrievalConfig={{ globalMaxTokens: 1000 }}
         suggestedQuestions={["What is Statewave?", "How does memory work?"]}
       />,
     );
@@ -71,7 +71,7 @@ describe("StatewaveChat", () => {
     render(
       <StatewaveChat
         adapter={makeAdapter()}
-        readSubjects={["test:subject"]}
+        readSubjects={["test:subject"]} retrievalConfig={{ globalMaxTokens: 1000 }}
         suggestedQuestions={[]}
       />,
     );
@@ -82,7 +82,7 @@ describe("StatewaveChat", () => {
     const { container } = render(
       <StatewaveChat
         adapter={makeAdapter()}
-        readSubjects={["test:subject"]}
+        readSubjects={["test:subject"]} retrievalConfig={{ globalMaxTokens: 1000 }}
         containerClassName="my-chat-container"
       />,
     );
@@ -93,7 +93,7 @@ describe("StatewaveChat", () => {
     render(
       <StatewaveChat
         adapter={makeAdapter()}
-        readSubjects={["test:subject"]}
+        readSubjects={["test:subject"]} retrievalConfig={{ globalMaxTokens: 1000 }}
         inputPlaceholder="Ask me anything…"
       />,
     );
@@ -105,7 +105,7 @@ describe("StatewaveChat", () => {
     const { container } = render(
       <StatewaveChat
         adapter={makeAdapter()}
-        readSubjects={["test:subject"]}
+        readSubjects={["test:subject"]} retrievalConfig={{ globalMaxTokens: 1000 }}
         composerClassName="my-composer"
       />,
     );
@@ -116,7 +116,7 @@ describe("StatewaveChat", () => {
     const { container } = render(
       <StatewaveChat
         adapter={makeAdapter()}
-        readSubjects={["test:subject"]}
+        readSubjects={["test:subject"]} retrievalConfig={{ globalMaxTokens: 1000 }}
         suggestedQuestions={["Q1"]}
         suggestionsClassName="my-suggestions"
       />,
