@@ -93,6 +93,59 @@ describe("mergeSubjectResults", () => {
     expect(bundle.items[0].content).toBe("shared fact");
   });
 
+  it("deduplicates by episodeId", () => {
+    const results: MultiSubjectResults = {
+      successful: [
+        {
+          subject: "a",
+          tokenEstimate: 50,
+          items: [{ subject: "a", content: "ep fact", tokenCount: 50, episodeId: "ep-1" }],
+        },
+        {
+          subject: "b",
+          tokenEstimate: 50,
+          items: [{ subject: "b", content: "ep fact duplicate", tokenCount: 50, episodeId: "ep-1" }],
+        },
+      ],
+      warnings: [],
+    };
+    const bundle = mergeSubjectResults(results, BASE_CONFIG);
+    expect(bundle.items).toHaveLength(1);
+    expect(bundle.items[0].content).toBe("ep fact");
+  });
+
+  it("does not exclude a valid item whose memoryId was seen on a skipped item", () => {
+    // Regression: deduplicateItems previously added memoryId to seenMemory
+    // before checking episodeId, causing the next item with that memoryId to
+    // be incorrectly excluded even though the prior item was never included.
+    //
+    // Item B: memoryId="m2", episodeId="e1" — skipped because e1 was seen.
+    //   Before the fix, "m2" was added to seenMemory here.
+    // Item C: memoryId="m2", episodeId="e2" — should be included.
+    //   Before the fix, it was wrongly skipped because seenMemory had "m2".
+    const results: MultiSubjectResults = {
+      successful: [
+        {
+          subject: "a",
+          tokenEstimate: 300,
+          items: [
+            { subject: "a", content: "item A", tokenCount: 50, memoryId: "m1", episodeId: "e1" },
+            { subject: "a", content: "item B", tokenCount: 50, memoryId: "m2", episodeId: "e1" },
+            { subject: "a", content: "item C", tokenCount: 50, memoryId: "m2", episodeId: "e2" },
+          ],
+        },
+      ],
+      warnings: [],
+    };
+    const bundle = mergeSubjectResults(results, BASE_CONFIG);
+    // Item A: included (m1/e1 not seen)
+    // Item B: excluded (e1 already seen from item A) — and "m2" must NOT poison seenMemory
+    // Item C: included (m2 and e2 not seen, because item B was never actually included)
+    expect(bundle.items).toHaveLength(2);
+    expect(bundle.items[0].content).toBe("item A");
+    expect(bundle.items[1].content).toBe("item C");
+  });
+
   it("truncates to global budget", () => {
     const config: MultiSubjectRetrievalConfig = { ...BASE_CONFIG, globalMaxTokens: 100 };
     const results: MultiSubjectResults = {
