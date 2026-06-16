@@ -125,14 +125,14 @@ function deduplicateItems(items: RawItem[]): RawItem[] {
   const result: RawItem[] = [];
 
   for (const item of items) {
-    if (item.memoryId) {
-      if (seenMemory.has(item.memoryId)) continue;
-      seenMemory.add(item.memoryId);
-    }
-    if (item.episodeId) {
-      if (seenEpisode.has(item.episodeId)) continue;
-      seenEpisode.add(item.episodeId);
-    }
+    // Check both conditions before mutating seen sets — avoids polluting seenMemory
+    // with IDs from items that are subsequently skipped by a seenEpisode match.
+    const dupeMemory = item.memoryId !== undefined && seenMemory.has(item.memoryId);
+    const dupeEpisode = item.episodeId !== undefined && seenEpisode.has(item.episodeId);
+    if (dupeMemory || dupeEpisode) continue;
+
+    if (item.memoryId) seenMemory.add(item.memoryId);
+    if (item.episodeId) seenEpisode.add(item.episodeId);
     result.push(item);
   }
 
