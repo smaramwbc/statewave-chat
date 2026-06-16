@@ -1,0 +1,45 @@
+{
+  "name": "@statewavedev/chat-core",
+  "version": "0.1.0",
+  "description": "Framework-independent Statewave chat types, adapter interfaces, and headless session engine",
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./server": {
+      "types": "./dist/server/index.d.ts",
+      "import": "./dist/server/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "lint": "eslint src tests"
+  },
+  "devDependencies": {
+    "@statewavedev/sdk": "^1.1.0",
+    "typescript": "^6.0.0",
+    "vitest": "^4.1.8"
+  },
+  "peerDependencies": {
+    "@statewavedev/sdk": ">=1.1.0"
+  },
+  "peerDependenciesMeta": {
+    "@statewavedev/sdk": {
+      "optional": true
+    }
+  }
+}
