@@ -1,0 +1,8 @@
+node_modules/
+dist/
+*.tgz
+.env
+.env.local
+.changeset/*.md
+!.changeset/README.md
+coverage/
