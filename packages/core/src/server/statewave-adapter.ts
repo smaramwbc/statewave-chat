@@ -52,47 +52,47 @@ interface StatewaveSDKClient {
   createEpisode(
     params: {
       subjectId: string;
-      kind: string;
-      text: string;
+      source: string;
+      type: string;
+      payload: Record<string, unknown>;
       metadata?: Record<string, unknown>;
-      source?: { type: string; id: string; url?: string };
     },
     options?: { signal?: AbortSignal },
   ): Promise<{ id: string }>;
 }
 
+// Matches the real ContextBundle shape returned by @statewavedev/sdk >= 1.1.0.
+// facts = compiled semantic memories; procedures = compiled procedural memories.
 interface StatewaveContextResponse {
-  memories?: StatewaveMemoryItem[];
+  facts?: StatewaveMemoryItem[];
+  procedures?: StatewaveMemoryItem[];
   episodes?: StatewaveEpisodeItem[];
-  totalTokens?: number;
+  tokenEstimate?: number;
+  assembledContext?: string;
 }
 
 interface StatewaveMemoryItem {
   id: string;
-  subject: string;
-  text: string;
-  score?: number;
-  tokenCount?: number;
-  createdAt?: string;
+  subjectId: string;
+  kind?: string;
+  content: string;
+  summary?: string;
+  confidence?: number;
   validFrom?: string;
   validTo?: string | null;
   status?: string;
-  claimKey?: string;
-  entityKey?: string;
-  qualifiers?: Record<string, unknown>;
   metadata?: Record<string, unknown>;
-  episodes?: StatewaveEpisodeItem[];
+  createdAt?: string;
 }
 
 interface StatewaveEpisodeItem {
   id: string;
-  subject: string;
-  text: string;
-  score?: number;
-  tokenCount?: number;
-  createdAt?: string;
+  subjectId: string;
+  type?: string;
+  source?: string;
+  payload: Record<string, unknown>;
   metadata?: Record<string, unknown>;
-  source?: { type: string; id: string; url?: string };
+  createdAt?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -164,40 +164,33 @@ function buildContextItems(subject: string, response: StatewaveContextResponse):
   const items: ChatContextItem[] = [];
   let seq = 1;
 
-  for (const mem of response.memories ?? []) {
+  for (const mem of [...(response.facts ?? []), ...(response.procedures ?? [])]) {
     items.push({
       id: `S${seq++}`,
-      subject,
-      content: mem.text,
+      subject: mem.subjectId ?? subject,
+      content: mem.content,
       memoryId: mem.id,
-      score: mem.score,
-      tokenCount: mem.tokenCount,
+      score: mem.confidence,
       createdAt: mem.createdAt,
       validFrom: mem.validFrom,
       validTo: mem.validTo,
       status: (mem.status as ChatContextItem["status"]) ?? "active",
-      claimKey: mem.claimKey,
-      entityKey: mem.entityKey,
-      qualifiers: mem.qualifiers,
       metadata: mem.metadata,
-      source: normalizeSource(
-        undefined,
-        mem.metadata,
-      ),
+      source: normalizeSource(undefined, mem.metadata),
     });
   }
 
   for (const ep of response.episodes ?? []) {
+    const text = typeof ep.payload?.text === "string" ? ep.payload.text : "";
+    if (!text) continue;
     items.push({
       id: `S${seq++}`,
-      subject,
-      content: ep.text,
+      subject: ep.subjectId ?? subject,
+      content: text,
       episodeId: ep.id,
-      score: ep.score,
-      tokenCount: ep.tokenCount,
       createdAt: ep.createdAt,
       metadata: ep.metadata,
-      source: normalizeSource(ep.source, ep.metadata),
+      source: normalizeSource(undefined, ep.metadata),
     });
   }
 
@@ -280,15 +273,18 @@ export class StatewavePersistenceAdapter implements ChatPersistenceAdapter {
     await this.client.createEpisode(
       {
         subjectId: writeSubject,
-        kind: "chat.message",
-        text: `[${message.role}] ${message.content}`,
-        metadata: {
-          sessionId,
+        source: "chat",
+        type: "chat.message",
+        payload: {
+          text: `[${message.role}] ${message.content}`,
           role: message.role,
           messageId: message.id,
-          createdAt: message.createdAt,
+        },
+        metadata: {
+          sessionId,
           grounded: message.grounded,
           citationCount: message.citations?.length ?? 0,
+          createdAt: message.createdAt,
         },
       },
       { signal },
@@ -326,9 +322,9 @@ export class StatewaveSuggestedQuestionsAdapter implements SuggestedQuestionsAda
       return [];
     }
 
-    const snippet = (context.memories ?? [])
+    const snippet = [...(context.facts ?? []), ...(context.procedures ?? [])]
       .slice(0, 3)
-      .map((m) => m.text.slice(0, 200))
+      .map((m) => m.content.slice(0, 200))
       .join("\n---\n");
 
     const prompt = `Based on this knowledge base content, suggest ${limit} concise, natural questions a user might ask. Return only a JSON array of strings. No explanation.

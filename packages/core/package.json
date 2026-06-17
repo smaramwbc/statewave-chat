@@ -1,6 +1,6 @@
 {
   "name": "@statewavedev/chat-core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Framework-independent Statewave chat types, adapter interfaces, and headless session engine",
   "license": "Apache-2.0",
   "type": "module",
