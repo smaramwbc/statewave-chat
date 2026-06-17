@@ -1,5 +1,13 @@
 # @statewavedev/chat-widget
 
+## 0.1.1
+
+### Patch Changes
+
+- Updated dependencies [883c676]
+  - @statewavedev/chat-core@0.1.2
+  - @statewavedev/chat-react@0.1.1
+
 ## 0.1.0
 
 ### Minor Changes
