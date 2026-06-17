@@ -1,6 +1,6 @@
 {
   "name": "@statewavedev/chat-react",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "React hooks and components for Statewave chat",
   "type": "module",
   "license": "Apache-2.0",
@@ -17,7 +17,9 @@
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json",

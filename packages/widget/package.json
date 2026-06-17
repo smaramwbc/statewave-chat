@@ -1,6 +1,6 @@
 {
   "name": "@statewavedev/chat-widget",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Drop-in Statewave chat widget for any website",
   "type": "module",
   "license": "Apache-2.0",
@@ -17,7 +17,9 @@
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json",
