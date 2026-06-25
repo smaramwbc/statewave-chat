@@ -124,7 +124,7 @@ Key design constraints:
 - **Read/write subject isolation** — `writeSubject` is never readable until after the first persisted turn
 - **AbortSignal throughout** — all async operations are cancellable without retry
 
-See [docs/architecture.md](docs/architecture.md) for the full design, subject naming conventions, and connector compatibility guide.
+See [statewave-docs](https://github.com/smaramwbc/statewave-docs) for the full design, subject naming conventions, and connector compatibility guide.
 
 ## Development
 
