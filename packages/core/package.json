@@ -32,7 +32,7 @@
   "devDependencies": {
     "@statewavedev/sdk": "^1.4.0",
     "typescript": "^6.0.0",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.11"
   },
   "peerDependencies": {
     "@statewavedev/sdk": ">=1.1.0"
