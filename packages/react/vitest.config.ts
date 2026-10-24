@@ -7,7 +7,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@statewavedev/chat-core": resolve(__dirname, "../core/src/index.ts"),
+      "@statewavedev/chat-core": resolve(import.meta.dirname, "../core/src/index.ts"),
     },
   },
   test: {

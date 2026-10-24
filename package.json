@@ -22,7 +22,8 @@
   },
   "pnpm": {
     "overrides": {
-      "read-yaml-file": "^2.1.0"
+      "read-yaml-file": "^2.1.0",
+      "shell-quote": ">=1.11.0"
     }
   }
 }
